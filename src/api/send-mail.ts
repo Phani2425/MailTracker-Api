@@ -1,6 +1,8 @@
 import { Hono } from "hono"
 import {v4 as uuid} from "uuid"
 import Track from "../model/track-model";
+import { sendEmail } from "../utils/SendMail";
+
 
 const app = new Hono();
 
@@ -15,11 +17,14 @@ app.post('/send-mail', async(c) => {
     }
 
 
-    const TrackingId = uuid();
+    const trackingId = uuid();
 
     try{
 
-        await Track.create({TrackingId});
+        await Track.create({trackingId});
+        await sendEmail(emails,trackingId);
+
+        return c.json({message : "Email sent successfully", trackingId});
 
     }catch(err){
         console.log(err);
@@ -29,3 +34,5 @@ app.post('/send-mail', async(c) => {
 
     
 })
+
+export default app;

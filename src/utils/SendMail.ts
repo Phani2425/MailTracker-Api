@@ -8,13 +8,17 @@ const transport = createTransport({
     }
 })
 
-const sendEmail = async(emails:string[], trackingId:string) => {
+export const sendEmail = async(emails:string[], trackingId:string) => {
+
+  const trackingURL = `${Bun.env.BASE_URL}/track/track-mail/${trackingId}`
+
     try{
         await transport.sendMail({
             from: process.env.EMAIL_USER,
             to: emails,
             subject: 'Tracking dead pixel',
-            html:`<h1>Tracking Id:- ${trackingId}</h1>`
+            html:`<h1>Tracking Id:- ${trackingId}</h1>
+            <img src="${trackingURL}" alt="dead pixel" style="display: none;"  />`
         })
         console.log('Email sent successfully');
     }catch(err){
